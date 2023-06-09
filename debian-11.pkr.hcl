@@ -17,19 +17,32 @@ source "proxmox-iso" "debian" {
     cpu_type                = "${var.vm_cpu_type}"
 
     # Boot Configuration
-    boot_command            = ["<esc><wait>", "install <wait>", " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg <wait>", "debian-installer=en_GB.UTF-8 <wait>", "auto <wait>",
-    "locale=en_GB.UTF-8 <wait>", "kbd-chooser/method=gb <wait>", "keyboard-configuration/xkb-keymap=gb <wait>", "netcfg/get_hostname=pkr-template-debian <wait>", "netcfg/get_domain=local.domain <wait>",
-    "fb=false <wait>", "debconf/frontend=noninteractive <wait>",
-    "console-setup/ask_detect=false <wait>", "console-keymaps-at/keymap=gb <wait>", "grub-installer/bootdev=/dev/sda <wait>", "<enter><wait>"]
+    boot_command = [
+        "<esc><wait>",
+        "install <wait>",
+        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg <wait>",
+        "debian-installer=en_US.UTF-8 <wait>",
+        "auto <wait>",
+        "locale=en_US.UTF-8 <wait>",
+        "kbd-chooser/method=us <wait>",
+        "keyboard-configuration/xkb-keymap=us <wait>",
+        "netcfg/get_hostname=debian <wait>",
+        "netcfg/get_domain=debian <wait>",
+        "fb=false <wait>",
+        "debconf/frontend=noninteractive <wait>",
+        "console-setup/ask_detect=false <wait>",
+        "console-keymaps-at/keymap=us <wait>",
+        "grub-installer/bootdev=/dev/sda <wait>",
+        "<enter><wait>"]
     boot_wait               = "5s"
 
-    # PACKER Autoinstall Settings
+
     # Http directory Configuration
     http_directory          = "debian/http"
     # (Optional) Bind IP Address and Port
-    http_bind_address       = "192.168.1.142"  # set this to ip to where packer is run.
-    http_port_min = 8802
-    http_port_max = 8802
+    #http_bind_address       = "192.168.1.142"  # set this to ip to where packer is run.
+    #http_port_min = 8802
+    #http_port_max = 8802
 
     # ISO Configuration
     iso_checksum            = "file:https://cdimage.debian.org/cdimage/release/11.7.0/amd64/iso-cd/SHA256SUMS"
@@ -77,20 +90,18 @@ source "proxmox-iso" "debian" {
 }
 
 build {
-    # name = "ubuntu-server"
+    # name = "debian"
     sources = ["source.proxmox-iso.debian"]
 
     # Provisioning the VM Template for Cloud-Init Integration in Proxmox #1
     provisioner "shell" {
         inline = [
-            "#while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for cloud-init...'; sleep 1; done",
             "sudo rm /etc/ssh/ssh_host_*",
             "sudo truncate -s 0 /etc/machine-id",
             "sudo apt -y autoremove --purge",
             "sudo apt -y clean",
             "sudo apt -y autoclean",
             "sudo cloud-init clean",
-            "#sudo rm -f /etc/cloud/cloud.cfg.d/subiquity-disable-cloudinit-networking.cfg",
             "sudo sync"
         ]
     }
