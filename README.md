@@ -1,17 +1,32 @@
-# Proxmox Packer Linux
-A Packer project used to creates Proxmox Template Linux boxes
+# Packer Proxmox Templates
+A Packer project used to creates Proxmox Template boxes
 
 ## Commands
+
 ### Install required plugins
-packer init ubuntu-22.04.pkr.hcl
+The following command will install any required packer plugins.
 
-### Validate Packer Template
-packer validate --var-file=proxmox_variables.pkr.hcl ubuntu-22.04.pkr.hcl
+`packer init .`
 
-### Build Proxmox Linux box
-packer build --var-file=proxmox_variables.pkr.hcl ubuntu-22.04.pkr.hcl
+### Validate Packer Templates
+The following command will validate the packer template files.
 
-For cloud init to work the `http` folder **must** have both `user-data` and `meta-data` files.
+`packer validate --var-file=secrets.pkrvar.hcl .`
+
+Note: To limit the validation to a particular OS use the --only flag.
+
+For example to validate just the debian templates:
+`packer validate --var-file=secrets.pkrvar.hcl --only *.debian`
+
+### Build Proxmox Linux Templates
+The following command will connect to a proxmox server and build a template image.
+
+`packer build --var-file=secrets.pkrvar.hcl .`
+
+Note: To limit the validation to a particular OS use the --only flag.
+
+For example to build just the debian templates:
+`packer build --var-file=secrets.pkrvar.hcl --only *.debian`
 
 ## References
 - [packer-plugin-proxmox](https://github.com/hashicorp/packer-plugin-proxmox)
