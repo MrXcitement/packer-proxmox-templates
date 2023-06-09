@@ -1,5 +1,8 @@
 # Packer Proxmox Templates
-A Packer project used to creates Proxmox Template boxes
+A project that uses Packer to creates Proxmox Template images
+
+## Requirements
+- the `packer` command line tool.
 
 ## Commands
 
@@ -28,5 +31,9 @@ Note: To limit the validation to a particular OS use the --only flag.
 For example to build just the debian templates:
 `packer build --var-file=secrets.pkrvar.hcl --only *.debian`
 
+## Notes
+- When I run the build commands under Windows 11, I end up with a template that has the wrong network interface and does not work correctly with cloud-init.
+
 ## References
+- [packer command-line tool](https://www.packer.io/)
 - [packer-plugin-proxmox](https://github.com/hashicorp/packer-plugin-proxmox)
