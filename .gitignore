@@ -1,2 +1,2 @@
-secrets.pkrvars.hcl
+secrets.auto.pkrvars.hcl
 packer_cache/
